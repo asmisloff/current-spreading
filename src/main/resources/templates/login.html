@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" lang="ru">
+
+<head xmlns:th="http://www.thymeleaf.org">
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}" href="../static/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/login-form.css}" href="../static/css/login-form.css" />
+
+    <link rel="icon" type="image/x-icon" href="favicon.ico" th:href="@{/favicon.ico}" />
+    <title th:text="${title}">Авторизация</title>
+</head>
+
+<body>
+    <div class="left">
+        <img id="logo" th:src="@{/img/logo_rastekanie toka-01.png}" alt="logo" src="../static/img/logo_rastekanie toka-01.png">
+        <img id="curves" th:src="@{/img/curves.png}" alt="curves" src="../static/img/curves.png">
+    </div>
+    <div class="right">
+        <div class="form-container">
+            <form method="POST" th:action="@{/login}" class="needs-validation" novalidate>
+                <h3 class="form-heading text-center" id="page-name">Авторизация</h3>
+                <div th:hidden="${error != null ? false : true}"
+                    class="alert alert-danger alert-dismissible fade show mb-3 text-center" id="error-message"
+                    role="alert">
+                    <p th:if="${error}" th:text="${error}" class="text-with-white-space mb-0"></p>
+                </div>
+                <div>
+                    <input class="login-input" name="username" type="text" placeholder="Имя пользователя" id="username"
+                        required />
+                </div>
+                <div>
+                    <input class="login-input" name="password" type="password" placeholder="Пароль" id="password"
+                        required />
+                </div>
+                <button class="button-login" id="button-login" type="submit">Войти</button>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

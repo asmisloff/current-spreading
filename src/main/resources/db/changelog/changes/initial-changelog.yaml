@@ -1,0 +1,45 @@
+databaseChangeLog:
+  - changeSet:
+      id: init-schema
+      author: malygin
+      changes:
+        - sqlFile:
+            encoding: utf8
+            path: sql/2020-08-09_init-schema.sql
+            relativeToChangelogFile: true
+            splitStatements: true
+            stripComments: true
+  - changeSet:
+      id: 2022-05-05_user_table
+      author: asmisloff
+      changes:
+        - sqlFile:
+            encoding: utf8
+            path: sql/2022-05-05_user_table.sql
+            relativeToChangelogFile: true
+  - changeSet:
+      id: 2022-05-05_add_admin_user
+      author: asmisloff
+      changes:
+        - sqlFile:
+            encoding: utf8
+            path: sql/2022-05-05_add_admin_user.sql
+            relativeToChangelogFile: true
+  - changeSet:
+      id: 2022-06-07_add_locomotives
+      author: asmisloff
+      changes:
+        - sqlFile:
+            encoding: utf8
+            path: sql/2022-06-07_add_locomotives.sql
+            relativeToChangelogFile: true
+  - changeSet:
+      id: schema-direct_count
+      author: malygin
+      changes:
+        - sqlFile:
+            encoding: utf8
+            path: sql/2020-11-07_schema-direct_count.sql
+            relativeToChangelogFile: true
+            splitStatements: true
+            stripComments: true

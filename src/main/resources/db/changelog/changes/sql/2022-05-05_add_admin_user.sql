@@ -1,0 +1,2 @@
+INSERT INTO asu_ter_u_user (login, password, last_name, first_name, middle_name, organisation)
+VALUES ('admin', '$2a$10$WUZf/96AysseEiEuMqpHh.s/yWr7wmVSu48yjA5jLSfWwXC47qYYS', 'admin', '', '', 'ВНИИЖТ');

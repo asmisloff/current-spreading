@@ -1,0 +1,44 @@
+#computationPage {
+    display: flex;
+}
+
+#sidebar {
+    flex: 0 0 250px;
+    background-color: rgb(64, 71, 89);
+}
+
+#sidebar img {
+    width: 200px;
+    height: auto;
+    margin: 25px;
+    /* position: fixed; */
+    /* z-index: 1000; */
+}
+
+#worksheet {
+    width: calc(100% - 250px);
+    flex: 1 0 500px
+}
+
+.chartContainer {
+    margin-top: 10px;
+}
+
+h5 {
+    font-size: larger;
+}
+
+label {
+    font-weight: 500
+}
+
+.panel {
+    border: solid 1px grey;
+    padding: 5px;
+    border-radius: 5px;
+    margin-bottom: 2px
+}
+
+.panel>select input {
+    min-width: 100%
+}

@@ -1,0 +1,36 @@
+.header {
+    background-color: rgb(223, 226, 232);
+    height: 70px;
+    width: 100%;
+    min-width: 100vh;
+    box-shadow: 0 6px 10px rgb(64, 71, 89);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    /* position: fixed; */
+    /* z-index: 1000; */
+}
+
+.header img {
+    width: auto;
+    margin: 0 30px 0 30px;
+}
+
+#user-icon {
+    height: 40px;
+}
+
+#logout-icon {
+    height: 30px;
+}
+
+#user-name {
+    font-size: larger;
+}
+
+#headers-logo {
+    position: relative;
+    height: 60px;
+    left: 0;
+}

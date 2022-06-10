@@ -1,0 +1,26 @@
+.sidebar {
+    position: absolute;
+    background-color: rgb(64, 71, 89);
+    width: 15%;
+    min-width: 200px;
+    height: 100vh;
+    display: inline-flex;
+}
+
+#logo {
+    position: inherit;
+    width: 60%;
+    left:20%;
+    top: 10px;
+    margin-bottom: 20px;
+}
+
+#main-menu {
+    position: inherit;
+    left: 5px;
+    top: 100px;
+}
+
+#main-menu a {
+    color: white
+}
