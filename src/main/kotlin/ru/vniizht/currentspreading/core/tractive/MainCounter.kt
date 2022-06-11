@@ -663,7 +663,7 @@ fun getGeneratorResistance(speed: Double, train: Train): Double {
         0.0
     } else {
         (1330 * train.undercarGeneratorPower!!) /
-                ((train.weight / train.carsToTrain.sumOf({ it.count * it.car!!.numberOfAxles.number })) * speed)
+                ((train.weight / (train.carsToTrain.sumOf { it.count * it.car!!.numberOfAxles.number })) * speed)
     }
 }
 

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import ru.vniizht.asuterkortes.counter.tractive.*
-import ru.vniizht.currentspreading.dao.Station
+import ru.vniizht.asuterkortes.dao.model.jsonb.ResistanceToMotion
 import ru.vniizht.asuterkortes.dao.model.jsonb.ScheduledPeriod
 import ru.vniizht.currentspreading.repository.TrackCategoryRepository
 import ru.vniizht.asuterkortes.dto.NamesDto
@@ -18,13 +18,11 @@ import ru.vniizht.currentspreading.core.schedule.OrderedList
 import ru.vniizht.currentspreading.core.schedule.toOrderedList
 import ru.vniizht.currentspreading.core.tractive.averaging
 import ru.vniizht.currentspreading.core.tractive.tractiveCount
-import ru.vniizht.currentspreading.dao.Locomotive
-import ru.vniizht.currentspreading.dao.TractiveCalculate
-import ru.vniizht.currentspreading.dao.enums.LocomotiveCurrent
-import ru.vniizht.currentspreading.dao.enums.LocomotiveType
-import ru.vniizht.currentspreading.dao.enums.SchemaType
+import ru.vniizht.currentspreading.dao.*
+import ru.vniizht.currentspreading.dao.enums.*
 import ru.vniizht.currentspreading.dao.jsonb.*
 import ru.vniizht.currentspreading.dto.*
+import ru.vniizht.currentspreading.dto.Direction.*
 import ru.vniizht.currentspreading.repository.*
 import ru.vniizht.currentspreading.util.*
 import kotlin.math.abs
@@ -32,24 +30,25 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 
 @Service
-class CounterService(
+class TractiveService(
     private val locomotiveRepository: LocomotiveRepository,
     private val trainRepository: TrainRepository,
     private val tractiveCalculateRepository: TractiveCalculateRepository,
     private val trackCategoryRepository: TrackCategoryRepository,
     private val trackRepository: TrackRepository,
-    private val schemaRepository: ElectricalSchemaRepository
+    private val schemaRepository: ElectricalSchemaRepository,
+    private val trainService: TrainService,
+    private val carRepository: CarRepository
 ) {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    private fun performTractiveComputation(
+    fun performTractiveComputation(
         dto: TractionCountRequestDto,
         voltages: OrderedList<RealVoltageDto>? = null
     ): TractiveCalculate {
-        val locomotive = locomotiveRepository.getById(dto.locomotiveId)
-        val train = trainRepository.getById(dto.trainId)
+        val locomotive = dto.locomotive
+        val train = dto.train
         val track = trackRepository.getById(dto.trackId)
-        /* Если нечетное направление от последней станции, флаг реверса переворачивается */
         val reverse = dto.reverse
 
         validate(dto, locomotive)
@@ -145,6 +144,58 @@ class CounterService(
             train = train,
             result = TractiveCalculateResult(dto.averagingPeriod, voltage, averaging, periods, "- / -"),
             stops = stops
+        )
+    }
+
+    fun performTractiveComputation(req: CurrentSpreadingTractiveRequestDto): TractiveCalculate {
+        val locomotive = locomotiveRepository.findByCurrent(req.locomotiveCurrent)
+
+        val train = Train(
+            name = "",
+            brakeBlockType = req.brakeType,
+            brakeForce = 1000.0,
+            undercarGeneratorPower = 10.0,
+            carsToTrain = mutableListOf(),
+            resistanceToMotion = null,
+            weight = 0.0,
+            length = 0.0
+        )
+
+        val carsToTrain = CarsToTrain(
+            id = CarsToTrainId(-1L, -1L),
+            train = train,
+            car = Car(
+                name = "",
+                numberOfAxles = NumberOfAxles.SIX_AXLES,
+                weight = 20.0,
+                length = 30.0,
+                resistanceToMotion = ResistanceToMotion(
+                    componentRail = Array(3) { 0.0 },
+                    continuousRail = Array(3) { 0.0 }
+                )
+            ),
+            count = req.carQty
+        )
+        (train.carsToTrain as MutableList).add(carsToTrain)
+        train.resistanceToMotion = trainService.getTrainResistanceToMotion(train.carsToTrain)
+        train.weight = train.carsToTrain.first().car!!.weight * req.carQty
+        train.length = train.carsToTrain.first().car!!.length * req.carQty
+
+        return performTractiveComputation(
+            TractionCountRequestDto(
+                id = null,
+                locomotive = locomotive,
+                train = train,
+                trackId = 1,
+                recuperation = false,
+                idleOptimisation = true,
+                reverse = req.direction == Right,
+                categoryId = 1,
+                trackNumber = 1,
+                onlyLoop = true,
+                tractionRates = listOf(),
+                initialOverheat = 100.0
+            )
         )
     }
 
@@ -474,7 +525,7 @@ private fun ElectricalCharacteristic.toCounterCharacteristic() = PositionCharact
     fullAmperage = if (this is AlternateCharacteristic) commutateCurrentAmperage else null
 )
 
-private fun AverageElement.toGraphicDto() = TractionCountGraphicDto(
+fun AverageElement.toGraphicDto() = TractionCountGraphicDto(
     c = c,
     t = t,
     ma = abs(ma),

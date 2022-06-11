@@ -85,7 +85,7 @@ class TrainService(
         }
     }
 
-    private fun getTrainResistanceToMotion(dtoCars: List<CarsToTrain>): ResistanceToMotion {
+    fun getTrainResistanceToMotion(dtoCars: List<CarsToTrain>): ResistanceToMotion {
         val totalCars = dtoCars.sumOf { it.count }
         if (totalCars == 0) {
             return ResistanceToMotion(componentRail = arrayOf(0.0, 0.0, 0.0), continuousRail = arrayOf(0.0, 0.0, 0.0))

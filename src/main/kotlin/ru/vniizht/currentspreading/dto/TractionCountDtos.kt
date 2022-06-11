@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import ru.vniizht.asuterkortes.counter.tractive.ROUND_VALUE
 import ru.vniizht.asuterkortes.counter.tractive.TIME_SLOT
 import ru.vniizht.asuterkortes.dto.TrafficSchedulesStationDto
+import ru.vniizht.currentspreading.dao.Locomotive
 import ru.vniizht.currentspreading.dao.TractiveCalculate
+import ru.vniizht.currentspreading.dao.Train
 import ru.vniizht.currentspreading.util.round
 import ru.vniizht.currentspreading.util.toDateTime
 
@@ -36,8 +38,8 @@ data class TractionCountProfileForGraphicDto(
 
 data class TractionCountRequestDto(
     val id: Long?,
-    val locomotiveId: Long,
-    val trainId: Long,
+    val locomotive: Locomotive,
+    val train: Train,
     val trackId: Long,
     val timeSlot: Double = TIME_SLOT,
     val averagingPeriod: Double = (TIME_SLOT * ROUND_VALUE).round(3), //TODO 4,5 сек. добавить усреднение, если будут проблемы с производительностью
