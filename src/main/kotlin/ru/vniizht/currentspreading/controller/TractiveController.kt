@@ -1,28 +1,33 @@
 package ru.vniizht.currentspreading.controller
 
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import ru.vniizht.currentspreading.dto.CurrentSpreadingTractiveRequestDto
 import ru.vniizht.currentspreading.dto.TractionCountGraphicDto
 import ru.vniizht.currentspreading.service.SessionDataStorage
 import ru.vniizht.currentspreading.service.TractiveService
-import ru.vniizht.currentspreading.service.toGraphicDto
+import ru.vniizht.currentspreading.util.findIndexIntervalForKey
 
 @RestController
-@RequestMapping("/tractive")
+@RequestMapping("api/tractive")
 class TractiveController(
     val tractiveService: TractiveService,
     val sessionDataStorage: SessionDataStorage
 ) {
 
-    @GetMapping("/perform")
+    @PostMapping("/perform")
     fun performComputation(@RequestBody request: CurrentSpreadingTractiveRequestDto): List<TractionCountGraphicDto> {
-        val tc = tractiveService.performTractiveComputation(request)
-        sessionDataStorage.tc = tc
-        sessionDataStorage.testNumber++
-        return tc.result.elements.map { it.toGraphicDto() }
+        val tcData = tractiveService.performTractiveComputation(request)
+        sessionDataStorage.tcData = tcData
+        return tcData
+    }
+
+    @GetMapping
+    fun getAmperageByCoordinate(@RequestParam x: Double): Double {
+        if (sessionDataStorage.tcData == null) return 0.0
+        val index = sessionDataStorage.tcData!!
+            .findIndexIntervalForKey(x, selector = { it.c })
+            .first
+        return sessionDataStorage.tcData!![index].a
     }
 
 }

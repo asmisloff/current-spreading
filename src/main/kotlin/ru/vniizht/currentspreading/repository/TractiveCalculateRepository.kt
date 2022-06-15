@@ -29,7 +29,7 @@ interface TractiveCalculateRepository : JpaRepository<TractiveCalculate, Long> {
 
     @Query(
         value = """
-            SELECT * FROM asu_ter.asu_ter_k_main_tractive_calculate tc
+            SELECT * FROM asu_ter_k_main_tractive_calculate tc
             WHERE locomotive_id IN (
                 SELECT id FROM asu_ter.asu_ter_k_main_locomotive loc WHERE loc.current = :locomotiveCurrent
             )
@@ -44,7 +44,7 @@ interface TractiveCalculateRepository : JpaRepository<TractiveCalculate, Long> {
     ): List<TractiveCalculate>
 
     @Query(
-        value = "SELECT COUNT(*) FROM asu_ter.asu_ter_k_main_tractive_calculate\n" +
+        value = "SELECT COUNT(*) FROM asu_ter_k_main_tractive_calculate\n" +
                 "WHERE track_id = :id AND active = true;",
         nativeQuery = true
     )

@@ -240,7 +240,8 @@ class TrackService(
             val singleTrack = SingleTrack(
                 track = track,
                 trackNumber = trackIndex + 1,
-                type = TrackType.fromRussianName(dto.trackTypes[trackIndex])
+                type = TrackType.fromRussianName(dto.trackTypes[trackIndex]),
+                profile = dto.profile[trackIndex]
             )
             singleTrack.stations = dto.stations[trackIndex].mapTo(mutableListOf()) {
                 Station(
@@ -250,11 +251,18 @@ class TrackService(
                     loopStation = it.loopStation
                 )
             }
-            singleTrack.categories = dto.categories.mapTo(mutableListOf()) { categoryDto ->
+            singleTrack.categories = dto.categories.mapIndexedTo(mutableListOf()) { categoryIndex, categoryDto ->
                 TrackCategory(
                     name = categoryDto.name,
                     singleTrack = singleTrack,
-                    priority = categoryDto.priority
+                    priority = categoryDto.priority,
+                    speedLimits = dto.speedLimits[trackIndex].map {
+                        DbSpeedLimit(
+                            startCoordinate = it.startCoordinate,
+                            endCoordinate = it.endCoordinate,
+                            limit = it.limits[categoryIndex]
+                        )
+                    }
                 )
             }
 

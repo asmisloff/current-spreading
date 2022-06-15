@@ -424,9 +424,9 @@ fun tractiveCount(
             wir = profile[currentElementNumber].wir
             val currentBrakeForce = if (recuperation && currentSpeed < currentSpeedLimit) {
                 val maxBrakeForces =
-                    getDiscreteCurrentForces(recuperationPositions, 1, speed, voltageCoefficient = voltageCoefficient)
+                    getDiscreteCurrentForces(recuperationPositions, 1, speed)
                 val limitBrakeForces =
-                    getDiscreteCurrentForces(recuperationPositions, 0, speed, voltageCoefficient = voltageCoefficient)
+                    getDiscreteCurrentForces(recuperationPositions, 0, speed)
                 if (maxBrakeForces.fvn > limitBrakeForces.fvn) {
                     getFv(limitBrakeForces, speed)
                 } else {
@@ -456,8 +456,7 @@ fun tractiveCount(
                     val rows = getDiscreteCurrentForces(
                         recuperationPositions,
                         1,
-                        currentSpeed,
-                        voltageCoefficient
+                        currentSpeed
                     )
                     linterp(rows.vn, rows.vn1, rows.imn, rows.imn1, speed)
                 } else {
@@ -469,8 +468,7 @@ fun tractiveCount(
                         getDiscreteCurrentForces(
                             recuperationPositions,
                             1,
-                            currentSpeed,
-                            voltageCoefficient
+                            currentSpeed
                         ),
                         speed
                     )
@@ -485,8 +483,7 @@ fun tractiveCount(
                         getDiscreteCurrentForces(
                             recuperationPositions,
                             1,
-                            currentSpeed,
-                            voltageCoefficient
+                            currentSpeed
                         ),
                         speed
                     )
@@ -912,8 +909,7 @@ fun getFktp(
 fun getDiscreteCurrentForces(
     positions: List<Position>,
     currentPosition: Int,
-    currentSpeed: Double,
-    voltageCoefficient: Double
+    currentSpeed: Double
 ): PositionCharacteristics {
     if (currentPosition > 0) {
         if (currentSpeed
@@ -1090,7 +1086,7 @@ fun averaging(elements: List<Element>, averagingPeriod: Double, timeSlot: Double
             actA = 0.0,
             fullA = if (elements[0].fullAmperage == null) null else 0.0,
             rgm = 0,
-            0.0,
+            t = 0.0,
             ma = 0.0
         )
         for (j in i until i + count) {

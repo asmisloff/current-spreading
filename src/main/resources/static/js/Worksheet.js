@@ -25,19 +25,6 @@ function range(end, start) {
   return res;
 }
 
-function mockTractiveData() {
-  return [['x', "Ток поезда"]].concat(_toConsumableArray(range(120 / 0.25).map(function (x) {
-    return [x * 0.25, Math.abs(Math.random()) * 100];
-  })));
-}
-
-function mockSpreadingData(coord) {
-  var disp = Math.pow(Math.random() * Math.log(coord) * 10, 2);
-  return [['x', "Изменение потенциала рельсов относительно земли. Поперечное сечение."]].concat(_toConsumableArray(range(100, -100).map(function (x) {
-    return [x / 100, Math.exp(-(x * x) / disp)];
-  })));
-}
-
 function Worksheet() {
   var _useState = useState("DIRECT_CURRENT"),
       _useState2 = _slicedToArray(_useState, 2),
@@ -56,36 +43,106 @@ function Worksheet() {
       direction = _useState6[0],
       setDirection = _useState6[1];
 
-  var _useState7 = useState(mockTractiveData()),
+  var _useState7 = useState([]),
       _useState8 = _slicedToArray(_useState7, 2),
-      tractiveAmperageArray = _useState8[0],
-      setTractiveAmperageArrray = _useState8[1];
+      tractiveData = _useState8[0],
+      setTractiveData = _useState8[1];
 
   var _useState9 = useState(100),
       _useState10 = _slicedToArray(_useState9, 2),
       trainPosition = _useState10[0],
       setTrainPosition = _useState10[1];
 
+  var _useState11 = useState(0),
+      _useState12 = _slicedToArray(_useState11, 2),
+      trainAmperage = _useState12[0],
+      setTrainAmperage = _useState12[1];
+
+  var _useState13 = useState([]),
+      _useState14 = _slicedToArray(_useState13, 2),
+      spreading = _useState14[0],
+      setSpreading = _useState14[1];
+
   useEffect(function () {
-    fetch(apiUrl + '/locomotive/chartData/' + locomotiveCurrent, { method: "GET", mode: "no-cors" }).then(function (resp) {
+    fetch(apiUrl + '/locomotive/chartData/' + locomotiveCurrent, { method: "GET" }).then(function (resp) {
       return resp.json();
     }).then(function (data) {
       return setLocomotiveChartData(data);
     });
   }, [locomotiveCurrent]);
 
-  var flipDirection = function flipDirection() {
-    switch (direction) {
-      case "Слева направо":
-        setDirection("Справа налево");
-        break;
-      case "Справа налево":
-        setDirection("Слева направо");
-        break;
-      default:
-        throw new Error('\u041D\u0435\u0438\u0437\u0432\u0435\u0441\u0442\u043D\u043E\u0435 \u043D\u0430\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u0435: ' + direction);
+  useEffect(function () {
+    fetch(apiUrl + '/tractive/perform', {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        locomotiveCurrent: locomotiveCurrent,
+        direction: direction === "Слева направо" ? "LeftToRight" : "RightToLeft",
+        brakeType: "IRON",
+        carQty: 10,
+        tractionRate: 1.0
+      })
+    }).then(function (resp) {
+      return resp.json();
+    }).then(function (data) {
+      return setTractiveData(data);
+    });
+  }, [direction, locomotiveCurrent]);
+
+  useEffect(function () {
+    setTrainAmperage(getTrainAmperageByCoordinate(trainPosition, tractiveData));
+  }, [trainPosition, locomotiveCurrent, tractiveData]);
+
+  useEffect(function () {
+    var disp = Math.pow(Math.random() * Math.log(trainAmperage) * 10, 2);
+    console.log(trainAmperage);
+    setSpreading([['x', "Изменение потенциала рельсов относительно земли. Поперечное сечение."]].concat(_toConsumableArray(range(100, -100).map(function (x) {
+      return [x / 100, Math.exp(-(x * x) / disp)];
+    }))));
+  }, [trainAmperage]);
+
+  var getTrainAmperageByCoordinate = function getTrainAmperageByCoordinate(x, td) {
+    if (td.length === 0) {
+      return 0;
     }
-    setTractiveAmperageArrray(mockTractiveData());
+    var comparator = void 0;
+    if (direction === "Слева направо") {
+      comparator = function comparator(coord, elt) {
+        return coord - elt.c;
+      };
+    } else {
+      comparator = function comparator(coord, elt) {
+        return elt.c - coord;
+      };
+    }
+    var i = binarySearch(td, x, comparator);
+    if (i >= 0) {
+      return td[i].a;
+    } else {
+      var j = -i - 1;
+      if (j >= td.length) j = td.length - 1;
+      return td[j].a;
+    }
+  };
+
+  var binarySearch = function binarySearch(ar, el, cmp) {
+    var m = 0;
+    var n = ar.length - 1;
+    while (m <= n) {
+      var k = n + m >> 1;
+      var cmpRes = cmp(el, ar[k]);
+      if (cmpRes > 0) {
+        m = k + 1;
+      } else if (cmpRes < 0) {
+        n = k - 1;
+      } else {
+        return k;
+      }
+    }
+    return -m - 1;
   };
 
   return React.createElement(
@@ -221,7 +278,6 @@ function Worksheet() {
               className: 'form-select', size: '1',
               onChange: function onChange(e) {
                 setDirection(e.target.value);
-                setTractiveAmperageArrray(mockTractiveData());
               },
               style: { minWidth: "100%" }
             },
@@ -246,14 +302,14 @@ function Worksheet() {
         })
       )
     ),
-    React.createElement(TractiveChart, { amperage: tractiveAmperageArray }),
+    React.createElement(TractiveChart, { amperage: tractiveData }),
     React.createElement(Schema, { tractiveDirection: direction, trainPosition: trainPosition, onTrainMoved: function onTrainMoved(_, x) {
         return setTrainPosition(x);
       } }),
     React.createElement(
       'div',
       { className: 'chartContainer' },
-      React.createElement(SpreadingChart, { amperage: mockSpreadingData(trainPosition) })
+      React.createElement(SpreadingChart, { amperage: spreading })
     )
   );
 }

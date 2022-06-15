@@ -128,26 +128,42 @@ function TractiveChart(_ref3) {
     var amperage = _ref3.amperage;
 
 
-    useEffect(function () {
-        google.charts.load('current', { 'packages': ['corechart'] });
-        google.charts.setOnLoadCallback(drawChart);
-    }, [amperage]);
-
     var drawChart = function drawChart() {
-        var chartData = google.visualization.arrayToDataTable(amperage);
+        var header = ["x", "Ток поезда", "Профиль пути"];
+        var preparedData = amperage.map(function (entry) {
+            return [entry.c, entry.a, entry.p];
+        });
+        var chartData = google.visualization.arrayToDataTable([header].concat(_toConsumableArray(preparedData)));
         var options = {
             legend: { position: 'bottom' },
-            chartArea: { left: 40, top: 10, bottom: 40, right: 10 },
+            chartArea: { left: 80, top: 10, bottom: 40, right: 80 },
             explorer: {
                 keepInBounds: true,
                 maxZoomOut: 1,
                 maxZoomIn: 100,
                 axis: 'horizontal'
+            },
+            vAxes: {
+                0: {
+                    title: "Ток поезда, А",
+                    textStyle: { color: 'blue' }
+                },
+                1: {
+                    title: "Профиль пути",
+                    textStyle: { color: 'red' }
+                }
+            },
+            series: {
+                0: { targetAxisIndex: 0 },
+                1: { targetAxisIndex: 1 }
             }
         };
         var chart = new google.visualization.LineChart(document.getElementById('tractiveChart'));
         chart.draw(chartData, options);
     };
+
+    google.charts.load('current', { 'packages': ['corechart'] });
+    google.charts.setOnLoadCallback(drawChart);
 
     return React.createElement(
         'div',
@@ -162,11 +178,6 @@ function TractiveChart(_ref3) {
 function SpreadingChart(_ref4) {
     var amperage = _ref4.amperage;
 
-
-    useEffect(function () {
-        google.charts.load('current', { 'packages': ['corechart'] });
-        google.charts.setOnLoadCallback(drawChart);
-    }, [amperage]);
 
     var drawChart = function drawChart() {
         var chartData = google.visualization.arrayToDataTable(amperage);
@@ -184,6 +195,9 @@ function SpreadingChart(_ref4) {
         var chart = new google.visualization.LineChart(document.getElementById('spreadingChart'));
         chart.draw(chartData, options);
     };
+
+    google.charts.load('current', { 'packages': ['corechart'] });
+    google.charts.setOnLoadCallback(drawChart);
 
     return React.createElement(
         'div',

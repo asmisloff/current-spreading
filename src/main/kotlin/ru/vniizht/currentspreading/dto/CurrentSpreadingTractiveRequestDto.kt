@@ -7,7 +7,8 @@ data class CurrentSpreadingTractiveRequestDto(
     val locomotiveCurrent: LocomotiveCurrent,
     val direction: Direction,
     val brakeType: BrakeType,
-    val carQty: Int
+    val carQty: Int,
+    val tractionRate: Double = 1.0
 )
 
-enum class Direction { Left, Right }
+enum class Direction { LeftToRight, RightToLeft }

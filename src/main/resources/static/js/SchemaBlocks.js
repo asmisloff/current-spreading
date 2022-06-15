@@ -180,7 +180,7 @@ var ImgSprite = function (_Sprite) {
       _this3.y = konvaImage.y();
       konvaImage.on("dragmove", function () {
         konvaImage.y(_this3.y);
-        var x = Math.round(konvaImage.x());
+        var x = Math.round(konvaImage.x() * 1e3) * 1e-3;
         if (x < 0) x = 0;
         konvaImage.x(x);
         _this3.x = x;

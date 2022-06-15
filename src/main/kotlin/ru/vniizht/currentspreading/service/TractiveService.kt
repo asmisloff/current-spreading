@@ -48,7 +48,7 @@ class TractiveService(
     ): TractiveCalculate {
         val locomotive = dto.locomotive
         val train = dto.train
-        val track = trackRepository.getById(dto.trackId)
+        val track = dto.track
         val reverse = dto.reverse
 
         validate(dto, locomotive)
@@ -147,14 +147,14 @@ class TractiveService(
         )
     }
 
-    fun performTractiveComputation(req: CurrentSpreadingTractiveRequestDto): TractiveCalculate {
+    fun performTractiveComputation(req: CurrentSpreadingTractiveRequestDto): List<TractionCountGraphicDto> {
         val locomotive = locomotiveRepository.findByCurrent(req.locomotiveCurrent)
 
         val train = Train(
             name = "",
             brakeBlockType = req.brakeType,
-            brakeForce = 1000.0,
-            undercarGeneratorPower = 10.0,
+            brakeForce = null,
+            undercarGeneratorPower = null,
             carsToTrain = mutableListOf(),
             resistanceToMotion = null,
             weight = 0.0,
@@ -167,11 +167,11 @@ class TractiveService(
             car = Car(
                 name = "",
                 numberOfAxles = NumberOfAxles.SIX_AXLES,
-                weight = 20.0,
-                length = 30.0,
+                weight = 85.0,
+                length = 14.0,
                 resistanceToMotion = ResistanceToMotion(
-                    componentRail = Array(3) { 0.0 },
-                    continuousRail = Array(3) { 0.0 }
+                    componentRail = arrayOf(5.2, 35.4, 0.785, 0.027),
+                    continuousRail = arrayOf(5.2, 34.2, 0.732, 0.022)
                 )
             ),
             count = req.carQty
@@ -181,22 +181,39 @@ class TractiveService(
         train.weight = train.carsToTrain.first().car!!.weight * req.carQty
         train.length = train.carsToTrain.first().car!!.length * req.carQty
 
-        return performTractiveComputation(
+        val track = trackRepository.findAll()
+            .check("В БД нет путей") { it.isNotEmpty() }
+            .first()
+
+        val singleTrack = track.singleTracks.find { it.trackNumber == 1 }!!
+        val firstTrackStations = singleTrack.stations
+        val category = singleTrack.categories.find { it.name.lowercase() == "грузовой" }!!
+
+        val tc = performTractiveComputation(
             TractionCountRequestDto(
                 id = null,
                 locomotive = locomotive,
                 train = train,
-                trackId = 1,
+                track = track,
                 recuperation = false,
-                idleOptimisation = true,
-                reverse = req.direction == Right,
-                categoryId = 1,
+                idleOptimisation = false,
+                reverse = req.direction == RightToLeft,
+                categoryId = category.id!!,
                 trackNumber = 1,
                 onlyLoop = true,
-                tractionRates = listOf(),
-                initialOverheat = 100.0
+                tractionRates = listOf(
+                    when (req.direction) {
+                        LeftToRight -> TractionRateDto(firstTrackStations.first().id!!, req.tractionRate)
+                        RightToLeft -> TractionRateDto(firstTrackStations.last().id!!, req.tractionRate)
+                    }
+                ),
+                initialOverheat = 15.0
             )
         )
+        val graphicDtoList = tc.result.elements.map { it.toGraphicDto() }
+        addProfileOnGraphic(graphicDtoList, track.singleTracks.first().profile)
+        addSpeedLimitsOnGraphic(graphicDtoList, category.speedLimits)
+        return graphicDtoList
     }
 
     fun count(dto: TractionCountRequestDto): TractionCountResultDto {
@@ -229,14 +246,8 @@ class TractiveService(
 
     private fun addProfileOnGraphic(graphic: List<TractionCountGraphicDto>, profile: List<ProfileElement>) {
         val profileForGraphic: List<TractionCountProfileForGraphicDto> = convertProfile(profile)
-        val minHeight = profileForGraphic.minByOrNull { it.startHeight }!!.startHeight
-        val gap = if (minHeight < 0) {
-            -minHeight + 5
-        } else {
-            5.0
-        }
         graphic.forEach {
-            it.p = getProfileHeightOnCoordinate(profileForGraphic, it.c) + gap
+            it.p = getProfileHeightOnCoordinate(profileForGraphic, it.c)
             it.i = getProfileIOnCoordinate(profileForGraphic, it.c)
         }
     }

@@ -33,7 +33,7 @@ class TrackCategory(
     @field:Type(type = "jsonb")
     @field:Column(name = "speed_limits", nullable = true, columnDefinition = "jsonb")
     @JsonSetter(nulls = Nulls.AS_EMPTY)
-    var speedLimits: MutableList<DbSpeedLimit> = mutableListOf(), // Список должен быть mutable, иначе Hibernate не сможет его обновлять
+    var speedLimits: List<DbSpeedLimit> = listOf(),
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "single_track_id")

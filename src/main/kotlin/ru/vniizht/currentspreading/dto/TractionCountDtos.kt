@@ -5,6 +5,7 @@ import ru.vniizht.asuterkortes.counter.tractive.ROUND_VALUE
 import ru.vniizht.asuterkortes.counter.tractive.TIME_SLOT
 import ru.vniizht.asuterkortes.dto.TrafficSchedulesStationDto
 import ru.vniizht.currentspreading.dao.Locomotive
+import ru.vniizht.currentspreading.dao.Track
 import ru.vniizht.currentspreading.dao.TractiveCalculate
 import ru.vniizht.currentspreading.dao.Train
 import ru.vniizht.currentspreading.util.round
@@ -40,7 +41,7 @@ data class TractionCountRequestDto(
     val id: Long?,
     val locomotive: Locomotive,
     val train: Train,
-    val trackId: Long,
+    val track: Track,
     val timeSlot: Double = TIME_SLOT,
     val averagingPeriod: Double = (TIME_SLOT * ROUND_VALUE).round(3), //TODO 4,5 сек. добавить усреднение, если будут проблемы с производительностью
     val recuperation: Boolean = false,

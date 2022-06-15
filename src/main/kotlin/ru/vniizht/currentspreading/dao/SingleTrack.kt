@@ -39,7 +39,7 @@ class SingleTrack(
     @field:Type(type = "jsonb")
     @field:Column(name = "elements", nullable = true, columnDefinition = "jsonb")
     @JsonSetter(nulls = Nulls.AS_EMPTY)
-    var profile: MutableList<ProfileElement> = mutableListOf(), // Список должен быть mutable, иначе Hibernate не сможет его обновлять
+    var profile: List<ProfileElement> = listOf(), // Список должен быть mutable, иначе Hibernate не сможет его обновлять
 
     @OneToMany(mappedBy = "singleTrack", cascade = [CascadeType.ALL], fetch = FetchType.LAZY, orphanRemoval = true)
     var stations: MutableList<Station> = mutableListOf(),
