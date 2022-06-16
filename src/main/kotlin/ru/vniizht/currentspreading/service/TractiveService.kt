@@ -541,5 +541,6 @@ fun AverageElement.toGraphicDto() = TractionCountGraphicDto(
     t = t,
     ma = abs(ma),
     s = s,
-    a = abs(fullA ?: actA)
+    a = abs(fullA ?: actA),
+    aa = actA
 )

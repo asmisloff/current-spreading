@@ -27,9 +27,9 @@ function Schema(_ref) {
       layer.add(line);
     });
 
-    new BlockSs(layer, 100, "ЭЧЭ-01");
-    new BlockSs(layer, 500, "ЭЧЭ-02");
-    new BlockSs(layer, 1000, "ЭЧЭ-03");
+    new BlockSs(layer, 0, "ЭЧЭ-01");
+    new BlockSs(layer, 25, "ЭЧЭ-02");
+    new BlockSs(layer, 60, "ЭЧЭ-03");
 
     setPayload(new BlockPayload(layer, trainPosition, function () {}, onTrainMoved, tractiveDirection));
 
@@ -39,7 +39,8 @@ function Schema(_ref) {
       width: container.offsetWidth - 2,
       height: 300,
       draggable: true,
-      zoomable: true
+      zoomable: true,
+      offsetX: -100
     });
     var scaleBy = 1.2;
     stage.on('wheel', function (e) {

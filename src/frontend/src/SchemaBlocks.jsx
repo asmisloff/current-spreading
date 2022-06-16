@@ -1,23 +1,31 @@
+const km = 25
+
+function rounded(x) {
+  return +x.toFixed(3)
+}
+
 class BlockSs {
 
   constructor(layer, x0, label) {
     const rect = new Konva.Rect({
-      x: x0,
+      x: x0*km,
       y: 20,
       width: 100,
       height: 100,
       stroke: 'black',
       strokeWidth: 1,
       offsetX: 50,
-      draggable: true
+      draggable: false
     })
+
     rect.on("dragmove", () => {
       rect.y(20)
-      let x = Math.round(rect.x())
+      let x = rect.x()
       if (x < 0) x = 0
+      if (x > 60*km) x = 60*km
       rect.x(x)
       this.move(x)
-      coord.text(x)
+      coord.text(rounded(x / km))
     })
     layer.add(rect)
 
@@ -25,12 +33,12 @@ class BlockSs {
       points: [0, 120, 0, 200],
       stroke: "black",
       strokeWidth: 1,
-      x: x0
+      x: x0*km
     })
     layer.add(column)
 
     const dot = new Konva.Circle({
-      x: x0,
+      x: x0*km,
       y: 200,
       radius: 3,
       fill: "black"
@@ -38,7 +46,7 @@ class BlockSs {
     layer.add(dot)
 
     const name = new Konva.Text({
-      x: x0,
+      x: x0*km,
       y: 40,
       text: label,
       fontSize: 14,
@@ -55,7 +63,7 @@ class BlockSs {
     layer.add(name)
 
     const coord = new Konva.Text({
-      x: x0,
+      x: x0*km,
       y: 185,
       text: x0,
       fontSize: 14,
@@ -69,7 +77,7 @@ class BlockSs {
       const x = toNumber(newContent)
       if (!isNaN(x)) {
         coord.text(x)
-        this.move(x)
+        this.move(x*km)
       }
     })
     layer.add(coord)
@@ -89,7 +97,7 @@ class Sprite {
 
   constructor(layer, x0, onMove, onMoveEnd) {
     this.layer = layer
-    this.x = x0
+    this.x = x0*km
     this.onMove = onMove
     this.onMoveEnd = onMoveEnd
     this.graphics = []
@@ -106,7 +114,6 @@ class Sprite {
     this.x = x
   }
 
-
 }
 
 class ImgSprite extends Sprite {
@@ -120,10 +127,11 @@ class ImgSprite extends Sprite {
       this.y = konvaImage.y()
       konvaImage.on("dragmove", () => {
         konvaImage.y(this.y)
-        let x = Math.round(konvaImage.x() * 1e3) * 1e-3
+        let x = konvaImage.x()
         if (x < 0) x = 0
+        if (x > 60*km) x = 60*km
         konvaImage.x(x)
-        this.x = x
+        this.x = x / km
         this.onMove(this, x)
       })
       konvaImage.on("dragend", () => {
@@ -152,7 +160,7 @@ class BlockPayload extends Sprite {
     this.direction = direction
 
     this.coord = new Konva.Text({
-      x: x0,
+      x: x0*km,
       y: 205,
       text: x0,
       fontSize: 14,
@@ -166,9 +174,10 @@ class BlockPayload extends Sprite {
       if (!newContent) return
       let x = toNumber(newContent)
       if (x < 0) x = 0
+      if (x > 60*km) x = 60*km
       if (!isNaN(x)) {
         this.coord.text(x)
-        this.move(this, x)
+        this.move(this, x*km)
         this.onMoveEnd(this, x)
       }
     })
@@ -181,11 +190,11 @@ class BlockPayload extends Sprite {
         x0,
         (_, x) => {
           this.move(this, x)
-          this.coord.text(x)
+          this.coord.text(rounded(x / km))
         },
-        (_, x) => this.onMoveEnd(this, x),
+        (_, x) => this.onMoveEnd(this, x / km),
         {
-          x: x0,
+          x: x0*km,
           y: 200,
           width: 150,
           height: 40,

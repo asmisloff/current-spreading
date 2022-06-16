@@ -21,6 +21,27 @@ function range(end, start) {
   return res
 }
 
+class Complex {
+
+  constructor(re, im) {
+    this.re = re
+    this.im = im
+  }
+
+  magn() {
+    return Math.sqrt(this.re * this.re + this.im * this.im)
+  }
+
+  plus(other) {
+    return new Complex(this.re + other.re, this.im + other.im)
+  }
+
+  static magn(re, im) {
+    return Math.sqrt(re * re + im * im)
+  }
+
+}
+
 function Worksheet() {
   const [locomotiveCurrent, setLocomotiveCurrent] = useState("DIRECT_CURRENT")
   const [locomotiveChartData, setLocomotiveChartData] = useState({
@@ -28,7 +49,7 @@ function Worksheet() {
   })
   const [direction, setDirection] = useState("Слева направо")
   const [tractiveData, setTractiveData] = useState([])
-  const [trainPosition, setTrainPosition] = useState(100)
+  const [trainPosition, setTrainPosition] = useState(0)
   const [trainAmperage, setTrainAmperage] = useState(0)
   const [spreading, setSpreading] = useState([])
 
@@ -60,18 +81,52 @@ function Worksheet() {
   }, [direction, locomotiveCurrent])
 
   useEffect(() => {
-    setTrainAmperage(getTrainAmperageByCoordinate(trainPosition, tractiveData))
+    const amp = getTrainAmperageByCoordinate(trainPosition, tractiveData)
+    setTrainAmperage(amp)
+    let url
+    if (locomotiveCurrent == "DIRECT_CURRENT") {
+      url = `${apiUrl}/ic/dc/solve?coord=${trainPosition}&amp=${-amp.aa}`
+    } else {
+      url = `${apiUrl}/ic/ac/solve?coord=${trainPosition}&activeAmp=${amp.aa}&fullAmp=${amp.fa}`
+    }
+    fetch(url, { method: "GET" })
+      .then(resp => resp.json())
+      .then(solutions => {
+        if (solutions.msg !== undefined) {
+          alert(solutions.msg)
+          return
+        }
+        setSpreading(
+          [
+            ['x', "Изменение потенциала рельсов относительно земли. Поперечное сечение."],
+            ...solutions.map(s => [s.coordinate, total(s.amperages)])
+          ]
+        )
+      })
   }, [trainPosition, locomotiveCurrent, tractiveData])
 
-  useEffect(() => {
-    const disp = Math.pow((Math.random() * Math.log(trainAmperage) * 10), 2)
-    console.log(trainAmperage)
-    setSpreading([['x', "Изменение потенциала рельсов относительно земли. Поперечное сечение."], ...range(100, -100).map(x => [x / 100, Math.exp(-(x * x) / disp)])])
-  }, [trainAmperage])
+  const total = (ar) => {
+    if (ar.length === 0) return 0
+
+    let sum = locomotiveCurrent === "DIRECT_CURRENT" ? 0 : new Complex(0, 0)
+    const plus = locomotiveCurrent === "DIRECT_CURRENT" 
+      ? (x, y) => x + y
+      : (x, y) => x.plus(y)
+
+    if (ar.length > 1) ar = ar.slice(0, -1)
+    for (elt of ar) {
+      sum = plus(sum, elt)
+    }
+    if (locomotiveCurrent === "DIRECT_CURRENT") {
+      return sum
+    } else {
+      return sum.magn()
+    }
+  }
 
   const getTrainAmperageByCoordinate = (x, td) => {
     if (td.length === 0) {
-      return 0
+      return { aa: 0, fa: 0 }
     }
     let comparator
     if (direction === "Слева направо") {
@@ -81,29 +136,29 @@ function Worksheet() {
     }
     const i = binarySearch(td, x, comparator)
     if (i >= 0) {
-      return td[i].a
+      return { aa: td[i].aa, fa: td[i].a }
     } else {
       let j = -i - 1
       if (j >= td.length) j = td.length - 1
-      return td[j].a
+      return { aa: td[j].aa, fa: td[j].a }
     }
   }
 
   const binarySearch = (ar, el, cmp) => {
-    let m = 0;
-    let n = ar.length - 1;
+    let m = 0
+    let n = ar.length - 1
     while (m <= n) {
-      const k = (n + m) >> 1;
-      const cmpRes = cmp(el, ar[k]);
+      const k = (n + m) >> 1
+      const cmpRes = cmp(el, ar[k])
       if (cmpRes > 0) {
-        m = k + 1;
+        m = k + 1
       } else if (cmpRes < 0) {
-        n = k - 1;
+        n = k - 1
       } else {
-        return k;
+        return k
       }
     }
-    return -m - 1;
+    return -m - 1
   }
 
   return (

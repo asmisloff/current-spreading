@@ -6,6 +6,12 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+var km = 25;
+
+function rounded(x) {
+  return +x.toFixed(3);
+}
+
 var BlockSs = function BlockSs(layer, x0, label) {
   var _this = this;
 
@@ -14,22 +20,24 @@ var BlockSs = function BlockSs(layer, x0, label) {
   _initialiseProps.call(this);
 
   var rect = new Konva.Rect({
-    x: x0,
+    x: x0 * km,
     y: 20,
     width: 100,
     height: 100,
     stroke: 'black',
     strokeWidth: 1,
     offsetX: 50,
-    draggable: true
+    draggable: false
   });
+
   rect.on("dragmove", function () {
     rect.y(20);
-    var x = Math.round(rect.x());
+    var x = rect.x();
     if (x < 0) x = 0;
+    if (x > 60 * km) x = 60 * km;
     rect.x(x);
     _this.move(x);
-    coord.text(x);
+    coord.text(rounded(x / km));
   });
   layer.add(rect);
 
@@ -37,12 +45,12 @@ var BlockSs = function BlockSs(layer, x0, label) {
     points: [0, 120, 0, 200],
     stroke: "black",
     strokeWidth: 1,
-    x: x0
+    x: x0 * km
   });
   layer.add(column);
 
   var dot = new Konva.Circle({
-    x: x0,
+    x: x0 * km,
     y: 200,
     radius: 3,
     fill: "black"
@@ -50,7 +58,7 @@ var BlockSs = function BlockSs(layer, x0, label) {
   layer.add(dot);
 
   var name = new Konva.Text({
-    x: x0,
+    x: x0 * km,
     y: 40,
     text: label,
     fontSize: 14,
@@ -67,7 +75,7 @@ var BlockSs = function BlockSs(layer, x0, label) {
   layer.add(name);
 
   var coord = new Konva.Text({
-    x: x0,
+    x: x0 * km,
     y: 185,
     text: x0,
     fontSize: 14,
@@ -81,7 +89,7 @@ var BlockSs = function BlockSs(layer, x0, label) {
     var x = toNumber(newContent);
     if (!isNaN(x)) {
       coord.text(x);
-      _this.move(x);
+      _this.move(x * km);
     }
   });
   layer.add(coord);
@@ -159,7 +167,7 @@ var Sprite = function Sprite(layer, x0, onMove, onMoveEnd) {
   };
 
   this.layer = layer;
-  this.x = x0;
+  this.x = x0 * km;
   this.onMove = onMove;
   this.onMoveEnd = onMoveEnd;
   this.graphics = [];
@@ -180,10 +188,11 @@ var ImgSprite = function (_Sprite) {
       _this3.y = konvaImage.y();
       konvaImage.on("dragmove", function () {
         konvaImage.y(_this3.y);
-        var x = Math.round(konvaImage.x() * 1e3) * 1e-3;
+        var x = konvaImage.x();
         if (x < 0) x = 0;
+        if (x > 60 * km) x = 60 * km;
         konvaImage.x(x);
-        _this3.x = x;
+        _this3.x = x / km;
         _this3.onMove(_this3, x);
       });
       konvaImage.on("dragend", function () {
@@ -221,7 +230,7 @@ var BlockPayload = function (_Sprite2) {
     _this4.direction = direction;
 
     _this4.coord = new Konva.Text({
-      x: x0,
+      x: x0 * km,
       y: 205,
       text: x0,
       fontSize: 14,
@@ -235,9 +244,10 @@ var BlockPayload = function (_Sprite2) {
       if (!newContent) return;
       var x = toNumber(newContent);
       if (x < 0) x = 0;
+      if (x > 60 * km) x = 60 * km;
       if (!isNaN(x)) {
         _this4.coord.text(x);
-        _this4.move(_this4, x);
+        _this4.move(_this4, x * km);
         _this4.onMoveEnd(_this4, x);
       }
     });
@@ -246,11 +256,11 @@ var BlockPayload = function (_Sprite2) {
 
     _this4.graphics.push(new ImgSprite(layer, x0, function (_, x) {
       _this4.move(_this4, x);
-      _this4.coord.text(x);
+      _this4.coord.text(rounded(x / km));
     }, function (_, x) {
-      return _this4.onMoveEnd(_this4, x);
+      return _this4.onMoveEnd(_this4, x / km);
     }, {
-      x: x0,
+      x: x0 * km,
       y: 200,
       width: 150,
       height: 40,

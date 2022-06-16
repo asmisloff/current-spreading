@@ -27,7 +27,8 @@ data class TractionCountGraphicDto(
     val ma: Double, // motor amperage
     var sl: Int = 0, //speedLimit
     var p: Double = 0.0, //profile
-    var i: Double = 0.0 //i
+    var i: Double = 0.0,
+    val aa: Double = 0.0//i
 )
 
 data class TractionCountProfileForGraphicDto(

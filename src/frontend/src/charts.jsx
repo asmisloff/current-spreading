@@ -123,13 +123,13 @@ function TractiveChart({ amperage }) {
                 axis: 'horizontal',
             },
             vAxes: {
-                0: { 
+                0: {
                     title: "Ток поезда, А",
-                    textStyle: {color: 'blue'}
+                    textStyle: { color: 'blue' }
                 },
-                1: { 
+                1: {
                     title: "Профиль пути",
-                    textStyle: {color: 'red'}
+                    textStyle: { color: 'red' }
                 }
             },
             series: {

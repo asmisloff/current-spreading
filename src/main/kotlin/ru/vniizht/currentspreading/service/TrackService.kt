@@ -81,10 +81,7 @@ class TrackService(
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     fun deleteById(id: Long): PagedResult<TrackDto> {
-        trackRepository.findByIdOrNull(id)?.let {
-            it.active = false
-            trackRepository.save(it)
-        } ?: throw IllegalStateException("There is no entity with id = '$id'")
+        trackRepository.deleteById(id)
         return trackRepository.findAllByActiveTrue(PageRequest.of(0, PAGEABLE_DEFAULT_SIZE, Sort.by("name")))
             .map { it.toDto() }.toDto()
     }

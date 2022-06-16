@@ -1,6 +1,10 @@
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var useState = React.useState;
 var useEffect = React.useEffect;
@@ -25,6 +29,34 @@ function range(end, start) {
   return res;
 }
 
+var Complex = function () {
+  function Complex(re, im) {
+    _classCallCheck(this, Complex);
+
+    this.re = re;
+    this.im = im;
+  }
+
+  _createClass(Complex, [{
+    key: 'magn',
+    value: function magn() {
+      return Math.sqrt(this.re * this.re + this.im * this.im);
+    }
+  }, {
+    key: 'plus',
+    value: function plus(other) {
+      return new Complex(this.re + other.re, this.im + other.im);
+    }
+  }], [{
+    key: 'magn',
+    value: function magn(re, im) {
+      return Math.sqrt(re * re + im * im);
+    }
+  }]);
+
+  return Complex;
+}();
+
 function Worksheet() {
   var _useState = useState("DIRECT_CURRENT"),
       _useState2 = _slicedToArray(_useState, 2),
@@ -48,7 +80,7 @@ function Worksheet() {
       tractiveData = _useState8[0],
       setTractiveData = _useState8[1];
 
-  var _useState9 = useState(100),
+  var _useState9 = useState(0),
       _useState10 = _slicedToArray(_useState9, 2),
       trainPosition = _useState10[0],
       setTrainPosition = _useState10[1];
@@ -93,20 +125,73 @@ function Worksheet() {
   }, [direction, locomotiveCurrent]);
 
   useEffect(function () {
-    setTrainAmperage(getTrainAmperageByCoordinate(trainPosition, tractiveData));
+    var amp = getTrainAmperageByCoordinate(trainPosition, tractiveData);
+    setTrainAmperage(amp);
+    var url = void 0;
+    if (locomotiveCurrent == "DIRECT_CURRENT") {
+      url = apiUrl + '/ic/dc/solve?coord=' + trainPosition + '&amp=' + -amp.aa;
+    } else {
+      url = apiUrl + '/ic/ac/solve?coord=' + trainPosition + '&activeAmp=' + amp.aa + '&fullAmp=' + amp.fa;
+    }
+    fetch(url, { method: "GET" }).then(function (resp) {
+      return resp.json();
+    }).then(function (solutions) {
+      if (solutions.msg !== undefined) {
+        alert(solutions.msg);
+        return;
+      }
+      setSpreading([['x', "Изменение потенциала рельсов относительно земли. Поперечное сечение."]].concat(_toConsumableArray(solutions.map(function (s) {
+        return [s.coordinate, total(s.amperages)];
+      }))));
+    });
   }, [trainPosition, locomotiveCurrent, tractiveData]);
 
-  useEffect(function () {
-    var disp = Math.pow(Math.random() * Math.log(trainAmperage) * 10, 2);
-    console.log(trainAmperage);
-    setSpreading([['x', "Изменение потенциала рельсов относительно земли. Поперечное сечение."]].concat(_toConsumableArray(range(100, -100).map(function (x) {
-      return [x / 100, Math.exp(-(x * x) / disp)];
-    }))));
-  }, [trainAmperage]);
+  var total = function total(ar) {
+    if (ar.length === 0) return 0;
+
+    var sum = locomotiveCurrent === "DIRECT_CURRENT" ? 0 : new Complex(0, 0);
+    var plus = locomotiveCurrent === "DIRECT_CURRENT" ? function (x, y) {
+      return x + y;
+    } : function (x, y) {
+      return x.plus(y);
+    };
+
+    if (ar.length > 1) ar = ar.slice(0, -1);
+    var _iteratorNormalCompletion = true;
+    var _didIteratorError = false;
+    var _iteratorError = undefined;
+
+    try {
+      for (var _iterator = ar[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+        elt = _step.value;
+
+        sum = plus(sum, elt);
+      }
+    } catch (err) {
+      _didIteratorError = true;
+      _iteratorError = err;
+    } finally {
+      try {
+        if (!_iteratorNormalCompletion && _iterator.return) {
+          _iterator.return();
+        }
+      } finally {
+        if (_didIteratorError) {
+          throw _iteratorError;
+        }
+      }
+    }
+
+    if (locomotiveCurrent === "DIRECT_CURRENT") {
+      return sum;
+    } else {
+      return sum.magn();
+    }
+  };
 
   var getTrainAmperageByCoordinate = function getTrainAmperageByCoordinate(x, td) {
     if (td.length === 0) {
-      return 0;
+      return { aa: 0, fa: 0 };
     }
     var comparator = void 0;
     if (direction === "Слева направо") {
@@ -120,11 +205,11 @@ function Worksheet() {
     }
     var i = binarySearch(td, x, comparator);
     if (i >= 0) {
-      return td[i].a;
+      return { aa: td[i].aa, fa: td[i].a };
     } else {
       var j = -i - 1;
       if (j >= td.length) j = td.length - 1;
-      return td[j].a;
+      return { aa: td[j].aa, fa: td[j].a };
     }
   };
 
