@@ -2,7 +2,6 @@ package ru.vniizht.currentspreading.dto
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import org.apache.commons.math3.complex.Complex
-import ru.vniizht.asuterkortes.counter.acnew.*
 import ru.vniizht.asuterkortes.counter.circuit.BranchFeederInfo
 import ru.vniizht.currentspreading.dao.BranchList
 import ru.vniizht.currentspreading.dao.ElectricalSchema

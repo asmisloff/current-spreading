@@ -1,9 +1,6 @@
-package ru.vniizht.asuterkortes.counter.acnew
+package ru.vniizht.currentspreading.core.acnew
 
 import org.apache.commons.math3.complex.Complex
-import ru.vniizht.currentspreading.core.acnew.BlockAC
-import ru.vniizht.currentspreading.core.acnew.BlockPayloadAC
-import ru.vniizht.currentspreading.core.acnew.BlockPayloadAcd
 import ru.vniizht.currentspreading.dto.*
 
 // TODO: 09.02.2022 Пул поездов

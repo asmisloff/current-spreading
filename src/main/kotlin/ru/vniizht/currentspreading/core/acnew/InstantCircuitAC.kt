@@ -1,6 +1,5 @@
 package ru.vniizht.currentspreading.core.acnew
 
-import ru.vniizht.asuterkortes.counter.acnew.*
 import ru.vniizht.currentspreading.core.dcnew.checkAndAmendAxisCoordinate
 import ru.vniizht.asuterkortes.counter.throughout.capacity.integral.indices.*
 import ru.vniizht.asuterkortes.dto.*
