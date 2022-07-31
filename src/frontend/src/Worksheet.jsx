@@ -2,7 +2,7 @@ const useState = React.useState
 const useEffect = React.useEffect
 const useRef = React.useRef
 
-const apiUrl = "http://localhost:8080/api"
+const apiUrl = `${location.origin}/api`
 
 function toNumber(s) {
   switch (s) {

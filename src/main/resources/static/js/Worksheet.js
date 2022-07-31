@@ -10,7 +10,7 @@ var useState = React.useState;
 var useEffect = React.useEffect;
 var useRef = React.useRef;
 
-var apiUrl = "http://localhost:8080/api";
+var apiUrl = location.origin + '/api';
 
 function toNumber(s) {
   switch (s) {
