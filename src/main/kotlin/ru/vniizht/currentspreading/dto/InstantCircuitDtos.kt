@@ -55,7 +55,7 @@ data class InstantCircuitShortDto(
     JsonSubTypes.Type(value = InstantCircuitAcdSolutionDataEntry::class, name = "ACD"),
 )
 @JsonInclude(JsonInclude.Include.NON_NULL)
-interface InstantCircuitSolutionDataEntry {
+interface InstantCircuitSolutionDataEntry: IPayloadSolution {
     val coordinate: Double
     val objectName: String
     val description: String

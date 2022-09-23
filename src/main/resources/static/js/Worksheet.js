@@ -140,9 +140,7 @@ function Worksheet() {
         alert(solutions.msg);
         return;
       }
-      setSpreading([['x', "Изменение потенциала рельсов относительно земли. Поперечное сечение."]].concat(_toConsumableArray(solutions.map(function (s) {
-        return [s.coordinate, total(s.amperages)];
-      }))));
+      setSpreading([['x', "Изменение потенциала рельсов относительно земли. Поперечное сечение."]].concat(_toConsumableArray(solutions)));
     });
   }, [trainPosition, locomotiveCurrent, tractiveData]);
 

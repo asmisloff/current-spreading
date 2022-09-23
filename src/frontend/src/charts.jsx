@@ -151,7 +151,7 @@ function SpreadingChart({ amperage }) {
     const drawChart = () => {
         const chartData = google.visualization.arrayToDataTable(amperage)
         const options = {
-            curveType: 'function',
+            // curveType: 'function',
             legend: { position: 'bottom' },
             chartArea: { left: 40, top: 10, bottom: 40, right: 10 },
             explorer: {

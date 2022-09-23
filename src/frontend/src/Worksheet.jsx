@@ -99,7 +99,7 @@ function Worksheet() {
         setSpreading(
           [
             ['x', "Изменение потенциала рельсов относительно земли. Поперечное сечение."],
-            ...solutions.map(s => [s.coordinate, total(s.amperages)])
+            ...solutions
           ]
         )
       })

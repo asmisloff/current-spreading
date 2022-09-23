@@ -182,7 +182,7 @@ function SpreadingChart(_ref4) {
     var drawChart = function drawChart() {
         var chartData = google.visualization.arrayToDataTable(amperage);
         var options = {
-            curveType: 'function',
+            // curveType: 'function',
             legend: { position: 'bottom' },
             chartArea: { left: 40, top: 10, bottom: 40, right: 10 },
             explorer: {
