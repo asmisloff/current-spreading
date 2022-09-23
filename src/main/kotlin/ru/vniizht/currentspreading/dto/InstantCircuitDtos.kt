@@ -2,7 +2,7 @@ package ru.vniizht.asuterkortes.dto
 
 import com.fasterxml.jackson.annotation.*
 import org.apache.commons.math3.complex.Complex
-import ru.vniizht.asuterkortes.counter.circuit.BranchFeederInfo
+import ru.vniizht.currentspreading.core.circuit.BranchFeederInfo
 import ru.vniizht.currentspreading.dao.enums.SchemaType
 import ru.vniizht.currentspreading.dto.ACNetworkDto
 import ru.vniizht.currentspreading.dto.Connection

@@ -2,7 +2,7 @@ package ru.vniizht.currentspreading.core.acnew
 
 import org.apache.commons.math3.complex.Complex
 import ru.vniizht.asuterkortes.counter.circuit.ICircuitEdge
-import ru.vniizht.asuterkortes.counter.circuit.amendConsideringBranchIndex
+import ru.vniizht.currentspreading.core.circuit.amendConsideringBranchIndex
 import ru.vniizht.currentspreading.dto.ACNetworkDto
 import ru.vniizht.currentspreading.core.schedule.OrderedList
 import ru.vniizht.currentspreading.util.checkNotNull

@@ -63,17 +63,6 @@ function LocomotiveChart({ data }) {
 
     return (
         <div style={{ marginLeft: 10, minWidth: "100vh", border: "solid 1px", padding: 10 }}>
-            {/* <div className="form-check form-check-inline" style={{marginLeft: 40}}>
-                <input
-                    className="form-check-input"
-                    type="radio"
-                    name="inlineRadioOptions"
-                    checked={series === "F(v)"}
-                    readOnly={true}
-                    onClick={() => setSeries("F(v)")}
-                />
-                <label className="form-check-label" htmlFor="inlineRadio1">F(v)</label>
-            </div> */}
             <ChartRadioButton seriesName="F(v)" />
             <div className="form-check form-check-inline">
                 <input

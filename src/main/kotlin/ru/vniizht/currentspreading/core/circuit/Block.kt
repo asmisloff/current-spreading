@@ -1,8 +1,10 @@
-package ru.vniizht.asuterkortes.counter.circuit
+package ru.vniizht.currentspreading.core.circuit
 
 import org.jgrapht.Graphs
 import org.jgrapht.graph.DirectedWeightedMultigraph
-import ru.vniizht.currentspreading.core.circuit.Circuit
+import ru.vniizht.asuterkortes.counter.circuit.CircuitEdge
+import ru.vniizht.asuterkortes.counter.circuit.CircuitNode
+import ru.vniizht.asuterkortes.counter.circuit.NodeFactory
 
 /**
  * Базовый класс блоков схемы

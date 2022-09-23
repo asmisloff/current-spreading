@@ -5,7 +5,7 @@ import ru.vniizht.currentspreading.core.dcnew.*
 import ru.vniizht.currentspreading.dto.*
 
 /**
- * Фабрика блоков схемы МПЗ.
+ * Фабрика блоков схемы МПЗ на постоянном токе.
  * Вспомогательный класс для упрощения нумерации блоков при построении схем.
  */
 class BlockDCFactory {
@@ -74,7 +74,6 @@ class BlockDCFactory {
             is ConnectorDto -> o.toBlock(++jumperCnt, trackQty)
             is DCBranchDto -> o.toBlock(++branchCnt, trackQty)
             is BranchPointDto -> o.toBlock(++splitterCnt, trackQty)
-            else -> throw NotImplementedError()
         }
     }
 

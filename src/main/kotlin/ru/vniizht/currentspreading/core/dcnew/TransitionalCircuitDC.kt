@@ -1,18 +1,16 @@
-package ru.vniizht.asuterkortes.counter.dcnew
+package ru.vniizht.currentspreading.core.dcnew
 
 import org.ejml.data.DMatrixSparseCSC
 import org.ejml.data.DMatrixSparseTriplet
 import org.ejml.ops.DConvertMatrixStruct
 import org.ejml.sparse.csc.CommonOps_DSCC
-import ru.vniizht.currentspreading.core.circuit.Circuit
 import ru.vniizht.asuterkortes.counter.circuit.CircuitEdgeDC
 import ru.vniizht.asuterkortes.counter.circuit.CircuitNodeDC
-import ru.vniizht.currentspreading.core.dcnew.BlockSSDC
-import ru.vniizht.currentspreading.core.dcnew.NetworkResistanceRangeDC
+import ru.vniizht.currentspreading.core.circuit.Circuit
 import ru.vniizht.currentspreading.util.round
 
 /**
- * Схема МПЗ
+ * Схема МПЗ на постоянном токе
  */
 class TransitionalCircuitDC : Circuit<Double, CircuitEdgeDC, CircuitNodeDC>(CircuitEdgeDC::class.java) {
 

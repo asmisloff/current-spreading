@@ -4,22 +4,24 @@ import org.apache.commons.math3.complex.Complex
 import org.ejml.data.Complex_F32
 import org.jgrapht.Graphs
 import org.jgrapht.graph.DirectedWeightedMultigraph
-import ru.vniizht.asuterkortes.counter.acnew.*
-import ru.vniizht.asuterkortes.counter.circuit.*
+import ru.vniizht.asuterkortes.counter.circuit.CircuitEdgeAC
+import ru.vniizht.asuterkortes.counter.circuit.CircuitNodeAC
 import ru.vniizht.asuterkortes.counter.throughout.capacity.integral.indices.CompactPayloadSolution
 import ru.vniizht.asuterkortes.counter.throughout.capacity.integral.indices.CompactSolution
 import ru.vniizht.asuterkortes.counter.throughout.capacity.integral.indices.CompactSsAcSolution
-import ru.vniizht.currentspreading.core.throughout.capacity.integral.indices.exp60degF
 import ru.vniizht.asuterkortes.dto.*
+import ru.vniizht.currentspreading.core.circuit.Block
+import ru.vniizht.currentspreading.core.circuit.BranchFeederInfo
 import ru.vniizht.currentspreading.core.circuit.Circuit
+import ru.vniizht.currentspreading.core.circuit.amendConsideringBranchIndex
+import ru.vniizht.currentspreading.core.schedule.OrderedList
+import ru.vniizht.currentspreading.core.throughout.capacity.integral.indices.exp60degF
+import ru.vniizht.currentspreading.dto.ACNetworkDto
+import ru.vniizht.currentspreading.dto.Connection
 import ru.vniizht.currentspreading.util.eq
 import ru.vniizht.currentspreading.util.leftHalf
 import ru.vniizht.currentspreading.util.rightHalf
 import ru.vniizht.currentspreading.util.toFixed
-import ru.vniizht.currentspreading.core.schedule.OrderedList
-import ru.vniizht.currentspreading.dto.ACNetworkDto
-import ru.vniizht.currentspreading.dto.Connection
-import java.lang.IllegalStateException
 import kotlin.math.PI
 
 /**
@@ -88,9 +90,9 @@ abstract class BlockAC(
  */
 abstract class BlockSSAC(
     axisCoordinate: Double,
-    val suckingCoordinate: Double,
+    suckingCoordinate: Double,
     zSS: Complex,
-    val xCompXInv: Complex,
+    xCompXInv: Complex,
     xCompX: Complex,
     xCompY: Complex,
     vOut: Complex,

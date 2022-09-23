@@ -1,12 +1,12 @@
+@file:Suppress("unused")
+
 package ru.vniizht.currentspreading.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
-import org.springframework.security.config.web.server.ServerHttpSecurity.http
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import ru.vniizht.currentspreading.service.UserService
 
@@ -31,9 +31,5 @@ class SecurityConfig(val userDetailsService: UserService) : WebSecurityConfigure
             .and()
             .logout()
     }
-
-//    override fun configure(auth: AuthenticationManagerBuilder) {
-//        auth.userDetailsService(userDetailsService)
-//    }
 
 }

@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package ru.vniizht.currentspreading.controller
 
 import mu.KotlinLogging

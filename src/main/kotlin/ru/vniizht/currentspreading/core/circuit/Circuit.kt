@@ -5,7 +5,7 @@ import org.jgrapht.alg.cycle.StackBFSFundamentalCycleBasis
 import org.jgrapht.graph.DirectedWeightedMultigraph
 import org.jgrapht.nio.DefaultAttribute
 import org.jgrapht.nio.dot.DOTExporter
-import ru.vniizht.asuterkortes.counter.circuit.Block
+import ru.vniizht.currentspreading.core.circuit.Block
 import ru.vniizht.asuterkortes.counter.circuit.CircuitEdge
 import ru.vniizht.asuterkortes.counter.circuit.CircuitNode
 import java.awt.Toolkit

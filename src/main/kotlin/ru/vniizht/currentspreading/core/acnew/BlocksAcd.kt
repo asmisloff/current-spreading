@@ -2,22 +2,20 @@ package ru.vniizht.currentspreading.core.acnew
 
 import org.apache.commons.math3.complex.Complex
 import org.ejml.data.Complex_F32
-import ru.vniizht.asuterkortes.counter.acnew.*
-import ru.vniizht.asuterkortes.counter.circuit.BranchFeederInfo
-import ru.vniizht.currentspreading.core.circuit.Circuit
 import ru.vniizht.asuterkortes.counter.circuit.CircuitEdgeAC
 import ru.vniizht.asuterkortes.counter.circuit.CircuitNodeAC
-import ru.vniizht.asuterkortes.counter.throughout.capacity.integral.indices.*
-import ru.vniizht.currentspreading.dao.TransformerType
+import ru.vniizht.asuterkortes.counter.throughout.capacity.integral.indices.CompactAtAcdSolution
+import ru.vniizht.asuterkortes.counter.throughout.capacity.integral.indices.CompactSsAcSolution
+import ru.vniizht.asuterkortes.counter.throughout.capacity.integral.indices.CompactSsAcdSolution
 import ru.vniizht.asuterkortes.dto.*
-import ru.vniizht.asuterkortes.util.*
+import ru.vniizht.currentspreading.core.circuit.BranchFeederInfo
+import ru.vniizht.currentspreading.core.circuit.Circuit
 import ru.vniizht.currentspreading.core.throughout.capacity.integral.indices.exp60degF
 import ru.vniizht.currentspreading.core.throughout.capacity.integral.indices.expMinus60degF
-import ru.vniizht.currentspreading.util.checkNotNull
+import ru.vniizht.currentspreading.dao.TransformerType
 import ru.vniizht.currentspreading.util.leftHalf
 import ru.vniizht.currentspreading.util.rightHalf
 import ru.vniizht.currentspreading.util.toFixed
-import java.lang.StringBuilder
 import kotlin.math.roundToInt
 
 /**

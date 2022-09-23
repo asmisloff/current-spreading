@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package ru.vniizht.currentspreading.config
 
 import com.fasterxml.jackson.core.JsonGenerator

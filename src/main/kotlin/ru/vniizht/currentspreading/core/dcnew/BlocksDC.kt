@@ -4,9 +4,11 @@ import org.jgrapht.Graphs
 import org.jgrapht.graph.DirectedWeightedMultigraph
 import ru.vniizht.currentspreading.core.acnew.IBlockSSAcDuplex
 import ru.vniizht.asuterkortes.counter.circuit.*
-import ru.vniizht.asuterkortes.counter.dcnew.TransitionalCircuitDC
 import ru.vniizht.asuterkortes.dto.*
+import ru.vniizht.currentspreading.core.circuit.Block
+import ru.vniizht.currentspreading.core.circuit.BranchFeederInfo
 import ru.vniizht.currentspreading.core.circuit.Circuit
+import ru.vniizht.currentspreading.core.circuit.amendConsideringBranchIndex
 import ru.vniizht.currentspreading.core.schedule.OrderedList
 import ru.vniizht.currentspreading.dto.Connection
 import ru.vniizht.currentspreading.dto.DCNetworkDto

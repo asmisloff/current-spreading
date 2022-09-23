@@ -1,10 +1,9 @@
 package ru.vniizht.currentspreading.core.dcnew
 
 import mu.KotlinLogging
-import ru.vniizht.asuterkortes.counter.circuit.BranchFeederInfo
-import ru.vniizht.asuterkortes.counter.circuit.amendConsideringBranchIndex
+import ru.vniizht.currentspreading.core.circuit.BranchFeederInfo
+import ru.vniizht.currentspreading.core.circuit.amendConsideringBranchIndex
 import ru.vniizht.asuterkortes.counter.dcnew.BlockDCFactory
-import ru.vniizht.asuterkortes.counter.dcnew.TransitionalCircuitDC
 import ru.vniizht.currentspreading.dao.TransformerType
 import ru.vniizht.asuterkortes.dto.*
 import ru.vniizht.currentspreading.dto.*
